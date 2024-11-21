@@ -41,8 +41,11 @@ class InterfazGrafica:
         modificar_button = tk.Button(self.button_frame, text="Modificar Búsqueda", command=self.modificar_busqueda)
         modificar_button.grid(row=0, column=2, padx=10)
 
+        refresh_button = tk.Button(self.button_frame, text="Refresh", command=self.refrescar_tabla)
+        refresh_button.grid(row=0, column=3, padx=10)
+
         salir_button = tk.Button(self.button_frame, text="Salir", command=self.root.quit)
-        salir_button.grid(row=0, column=3, padx=10)
+        salir_button.grid(row=0, column=4, padx=10)
 
         # Contenedor del mapa
         self.map_frame = tk.Frame(self.root)
@@ -168,13 +171,22 @@ class InterfazGrafica:
         else:
             messagebox.showerror("Error", "Todos los campos son obligatorios.")
 
-    def eliminar_tienda(self):
-        id_tienda = simpledialog.askinteger("Eliminar Tienda", "ID de la tienda a eliminar:")
-        if id_tienda:
-            self.base_datos.eliminar_tienda(id_tienda)
-            messagebox.showinfo("Éxito", f"Tienda con ID {id_tienda} eliminada.")
+    def agregar_tienda(self):
+        """
+        Solicita los datos para agregar una nueva tienda.
+        """
+        nombre = simpledialog.askstring("Nueva Tienda", "Nombre de la tienda:")
+        ubicacion = simpledialog.askstring("Nueva Tienda", "Ubicación de la tienda:")
+        telefono = simpledialog.askstring("Nueva Tienda", "Teléfono de la tienda:")
+        latitud = simpledialog.askfloat("Nueva Tienda", "Latitud de la tienda:")
+        longitud = simpledialog.askfloat("Nueva Tienda", "Longitud de la tienda:")
+
+        if nombre and ubicacion and telefono and latitud and longitud:
+            self.base_datos.agregar_tienda(nombre, ubicacion, telefono, latitud, longitud)
+            messagebox.showinfo("Éxito", f"Tienda '{nombre}' agregada con éxito.")
         else:
-            messagebox.showerror("Error", "El ID es obligatorio.")
+            messagebox.showerror("Error", "Todos los campos son obligatorios.")
+
 
     def agregar_producto(self):
         nombre = simpledialog.askstring("Nuevo Producto", "Nombre del producto:")
@@ -207,5 +219,9 @@ class InterfazGrafica:
             messagebox.showinfo("Éxito", f"Búsqueda actualizada por {criterio}.")
         else:
             messagebox.showerror("Error", "Criterio no válido.")
-
-    
+    def refrescar_tabla(self):
+        """
+        Recarga la tabla de productos con los datos más recientes.
+        """
+        self.mostrar_productos()  # Llama al método para mostrar productos
+        messagebox.showinfo("Refresh", "La tabla ha sido actualizada.")
